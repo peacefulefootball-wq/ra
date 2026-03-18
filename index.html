@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রমাদানটি - সেহরি ও ইফতার কাউন্টডাউন</title>
+    <meta name="description" content="রমজান মাসের পবিত্র সময়সূচী, সেহরি ও ইফতারের কাউন্টডাউন, দোয়া ও নামাজের সময়">
+    <meta name="theme-color" content="#0B4D3C">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://api.aladhan.com">
+    
+    <style>
+        /* লাইটওয়েট ও মডার্ন ডিজাইন - ভারী কিছু নেই */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        /* রুট ভেরিয়েবল - ক্লিন কালার প্যালেট */
+        :root {
+            --primary: #0B4D3C;       /* গভীর সবুজ - ইসলামিক ভাব */
+            --primary-light: #1E7A5C;
+            --secondary: #C7A446;      /* সোনালী - ইফতার/সেহরি হাইলাইট */
+            --bg-light: #F9F7F4;        /* অফ-হোয়াইট ব্যাকগ্রাউন্ড */
+            --text-dark: #1E2A32;
+            --text-soft: #4A5A6A;
+            --white: #FFFFFF;
+            --shadow: 0 8px 20px rgba(0, 20, 10, 0.06);
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.2s;
+        }
+
+        /* ক্লিন টাইপোগ্রাফি - শুধু প্রয়োজনীয় */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            width: 100%;
+        }
+
+        /* হালকা হেডার */
+        header {
+            text-align: center;
+            padding: 2rem 0 0.5rem 0;
+        }
+
+        .ramadan-title {
+            font-size: 2.5rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .ramadan-title span {
+            font-weight: 300;
+            color: var(--secondary);
+            font-size: 1.8rem;
+        }
+
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.25rem 0 0.5rem 0;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid rgba(11, 77, 60, 0.15);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(2px);
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* লোকেশন সিলেক্টর - বাংলাদেশের বিভাগ */
+        .division-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .division-btn {
+            background: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-soft);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .division-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 12px rgba(11, 77, 60, 0.2);
+        }
+
+        /* ডিজিটাল টাইম - বড় ও পরিষ্কার */
+        .current-time-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.8rem 1rem;
+            margin: 1.5rem 0 2rem 0;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .date-bengali {
+            font-size: 1.2rem;
+            color: var(--text-soft);
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+        }
+
+        .live-time {
+            font-size: 3.8rem;
+            font-weight: 450;
+            letter-spacing: 2px;
+            color: var(--primary);
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .live-time small {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+
+        /* সেহরি-ইফতার কার্ড */
+        .ramadan-highlight {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0 2.5rem 0;
+        }
+
+        .highlight-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.8rem 1rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--secondary);
+        }
+
+        .highlight-card.iftar-card {
+            border-top-color: var(--primary-light);
+        }
+
+        .card-label {
+            font-size: 1.3rem;
+            font-weight: 450;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-time {
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .countdown-timer {
+            font-size: 2rem;
+            font-weight: 450;
+            color: var(--secondary);
+            background: rgba(199, 164, 70, 0.08);
+            padding: 0.5rem;
+            border-radius: 60px;
+            margin-top: 0.5rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .dua-arabic {
+            font-size: 1.35rem;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            color: #1E4A3B;
+            margin: 1rem 0 0.25rem;
+            line-height: 2;
+        }
+
+        .dua-meaning {
+            font-size: 0.95rem;
+            color: var(--text-soft);
+        }
+
+        /* নামাজের সময়সূচী - মিনিমাল */
+        .prayer-times-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2.5rem 0;
+        }
+
+        .prayer-item {
+            background: white;
+            border-radius: var(--border-radius-sm);
+            padding: 1.2rem 0.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .prayer-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .prayer-time-value {
+            font-size: 1.3rem;
+            font-weight: 450;
+            color: var(--text-dark);
+        }
+
+        /* ফুটার - ডায়নামিক */
+        footer {
+            background: white;
+            margin-top: 3rem;
+            padding: 2rem 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            text-align: center;
+            color: var(--text-soft);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .footer-year {
+            color: var(--primary);
+        }
+
+        /* লাইটহাউজ অপ্টিমাইজেশনের জন্য - অতি প্রয়োজনীয় */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+        }
+
+        /* রেসপন্সিভ টুইক */
+        @media (max-width: 600px) {
+            .container { padding: 0.8rem 1rem; }
+            .live-time { font-size: 2.8rem; }
+            .ramadan-highlight { grid-template-columns: 1fr; }
+            .prayer-times-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 400px) {
+            .prayer-times-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ট্রানজিশন স্মুথ */
+        .prayer-item, .highlight-card, .lang-btn, .division-btn {
+            transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+        }
+        .prayer-item:hover, .highlight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 30, 20, 0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="ramadan-title">রমাদানটি <span>⏐ রমজান</span></h1>
+            
+            <!-- ভাষা নির্বাচক - ৩ ভাষা -->
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-btn active" data-lang="bn">বাংলা</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="ar">العربية</button>
+            </div>
+
+            <!-- বাংলাদেশের বিভাগ - ডাইনামিক লোকেশন -->
+            <div class="division-selector" id="divisionSelector">
+                <button class="division-btn active" data-city="Dhaka">ঢাকা</button>
+                <button class="division-btn" data-city="Chittagong">চট্টগ্রাম</button>
+                <button class="division-btn" data-city="Rajshahi">রাজশাহী</button>
+                <button class="division-btn" data-city="Khulna">খুলনা</button>
+                <button class="division-btn" data-city="Sylhet">সিলেট</button>
+                <button class="division-btn" data-city="Barisal">বরিশাল</button>
+                <button class="division-btn" data-city="Rangpur">রংপুর</button>
+                <button class="division-btn" data-city="Mymensingh">ময়মনসিংহ</button>
+            </div>
+        </header>
+
+        <!-- লাইভ বর্তমান সময় (১২ ঘণ্টা) -->
+        <section class="current-time-panel" id="currentTimePanel">
+            <div class="date-bengali" id="currentDateBn">২০ রমজান ১৪৪৫</div>
+            <div class="live-time" id="liveClock">০৮:২৩:৪৫ <small>PM</small></div>
+        </section>
+
+        <!-- সেহরি ও ইফতার কার্ড + কাউন্টডাউন ও দোয়া -->
+        <section class="ramadan-highlight">
+            <!-- সেহরি কার্ড -->
+            <div class="highlight-card" id="sehriCard">
+                <div class="card-label" data-i18n="sehri">সেহরি</div>
+                <div class="card-time" id="sehriTime">--:-- --</div>
+                <div class="countdown-timer" id="sehriCountdown">--:--:--</div>
+                <div class="dua-arabic" id="sehriDuaAr">وَبِصَوْمِ غَدٍ نَّوَيْتُ</div>
+                <div class="dua-meaning" data-i18n="sehriDua">উচ্চারণ: ওয়াবি সাওমি গাদ্দান নাওয়াইতু</div>
+            </div>
+
+            <!-- ইফতার কার্ড -->
+            <div class="highlight-card iftar-card" id="iftarCard">
+                <div class="card-label" data-i18n="iftar">ইফতার</div>
+                <div class="card-time" id="iftarTime">--:-- --</div>
+                <div class="countdown-timer" id="iftarCountdown">--:--:--</div>
+                <div class="dua-arabic" id="iftarDuaAr">اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ</div>
+                <div class="dua-meaning" data-i18n="iftarDua">উচ্চারণ: আল্লাহুম্মা লাকা ছুমতু ওয়া আলা রিযক্বিকা আফতারতু</div>
+            </div>
+        </section>
+
+        <!-- ৫ ওয়াক্ত নামাজের সময় -->
+        <section class="prayer-times-grid" id="prayerTimes">
+            <!-- JS dynamically fills -->
+        </section>
+
+        <!-- ছোট ডায়নামিক ফুটার -->
+        <footer id="mainFooter">
+            <p>© <span class="footer-year" id="currentYear"></span> রমাদানটি - সেহরি ও ইফতার কাউন্টডাউন</p>
+            <p style="margin-top:0.5rem; font-size:0.85rem;" id="footerDynamicText">বাংলাদেশের সময় অনুযায়ী | সমস্ত দোয়া সংগৃহীত</p>
+        </footer>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ---------- গ্লোবাল ভেরিয়েবল ----------
+            const API_BASE = 'https://api.aladhan.com/v1/timingsByAddress';
+            const METHOD_CONFIG = 'method=99&methodSettings=18.5,null,17.5'; // মাকরুহ ইফতার/সেহরি অনুযায়ী
+
+            // ডিফল্ট ঢাকা, বাংলাদেশ
+            let currentDivision = 'Dhaka';
+            let currentLang = 'bn';
+            let prayerDataCache = null;
+            let countdownInterval = null;
+            let clockInterval = null;
+            let tomorrowDate = null;
+
+            // এলিমেন্ট রেফ
+            const liveClockEl = document.getElementById('liveClock');
+            const currentDateBn = document.getElementById('currentDateBn');
+            const sehriTimeEl = document.getElementById('sehriTime');
+            const iftarTimeEl = document.getElementById('iftarTime');
+            const sehriCountEl = document.getElementById('sehriCountdown');
+            const iftarCountEl = document.getElementById('iftarCountdown');
+            const prayerContainer = document.getElementById('prayerTimes');
+            const footerYear = document.getElementById('currentYear');
+            const sehriDuaAr = document.getElementById('sehriDuaAr');
+            const iftarDuaAr = document.getElementById('iftarDuaAr');
+            const duaMeaning = document.querySelectorAll('.dua-meaning');
+
+            // ভাষার ডেটা
+            const i18n = {
+                bn: {
+                    sehri: 'সেহরি',
+                    iftar: 'ইফতার',
+                    fajr: 'ফজর',
+                    sunrise: 'সূর্যোদয়',
+                    dhuhr: 'যোহর',
+                    asr: 'আছর',
+                    maghrib: 'মাগরিব',
+                    isha: 'ইশা',
+                    sehriDua: 'উচ্চারণ: ওয়াবি সাওমি গাদ্দান নাওয়াইতু',
+                    iftarDua: 'উচ্চারণ: আল্লাহুম্মা লাকা ছুমতু ওয়া আলা রিযক্বিকা আফতারতু',
+                    footerText: 'বাংলাদেশের সময় অনুযায়ী | সমস্ত দোয়া সংগৃহীত'
+                },
+                en: {
+                    sehri: 'Sehri',
+                    iftar: 'Iftar',
+                    fajr: 'Fajr',
+                    sunrise: 'Sunrise',
+                    dhuhr: 'Dhuhr',
+                    asr: 'Asr',
+                    maghrib: 'Maghrib',
+                    isha: 'Isha',
+                    sehriDua: "I intend to fast tomorrow",
+                    iftarDua: "O Allah, I fasted for You and I break my fast with Your sustenance",
+                    footerText: 'Bangladesh Standard Time | Dua collected from authentic sources'
+                },
+                ar: {
+                    sehri: 'سحور',
+                    iftar: 'إفطار',
+                    fajr: 'الفجر',
+                    sunrise: 'الشروق',
+                    dhuhr: 'الظهر',
+                    asr: 'العصر',
+                    maghrib: 'المغرب',
+                    isha: 'العشاء',
+                    sehriDua: 'وَبِصَوْمِ غَدٍ نَّوَيْتُ',
+                    iftarDua: 'اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ',
+                    footerText: 'بالتوقيت المحلي بنغلاديش | الأدعية المباركة'
+                }
+            };
+
+            // ---------- ফাংশন: লোকেশন আপডেট + API কল ----------
+            async function fetchTimings(city) {
+                const address = `${city}, Bangladesh`;
+                const url = `${API_BASE}?address=${encodeURIComponent(address)}&${METHOD_CONFIG}`;
+                
+                try {
+                    const response = await fetch(url, { cache: 'no-store' }); // লাইটহাউজ নেতিবাচক প্রভাব ফেলবে না
+                    if (!response.ok) throw new Error('API error');
+                    const data = await response.json();
+                    if (data.code === 200 && data.data) {
+                        prayerDataCache = data.data;
+                        updateAllTimes();
+                        return data.data;
+                    }
+                } catch (e) {
+                    console.warn('API fetch failed, fallback to demo');
+                    useFallbackTimings(city);
+                }
+            }
+
+            function useFallbackTimings(city) {
+                // ডেমো/ফallback সময় - API না পেলে (যাতে সাইট ভাঙে না)
+                const now = new Date();
+                prayerDataCache = {
+                    timings: {
+                        Fajr: "04:30",
+                        Sunrise: "05:50",
+                        Dhuhr: "11:55",
+                        Asr: "15:20",
+                        Maghrib: "18:00",
+                        Isha: "19:20"
+                    },
+                    date: { 
+                        hijri: { day: now.getDate(), month: { ar: 'رمضان', en: 'Ramadan' }, year: '1445' },
+                        readable: now.toLocaleDateString('bn-BD')
+                    },
+                    meta: { timezone: 'Asia/Dhaka' }
+                };
+                updateAllTimes();
+            }
+
+            // সময় ফরম্যাট ১২ ঘণ্টা (AM/PM)
+            function format12Hour(time24) {
+                const [hour, minute] = time24.split(':').map(Number);
+                const period = hour >= 12 ? 'PM' : 'AM';
+                let hour12 = hour % 12;
+                hour12 = hour12 === 0 ? 12 : hour12;
+                return `${hour12.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} ${period}`;
+            }
+
+            // কাউন্টডাউন আপডেট
+            function updateCountdowns() {
+                if (!prayerDataCache) return;
+
+                const now = new Date();
+                const timings = prayerDataCache.timings;
+
+                // সেহরি = ফজরের সময়; ইফতার = মাগরিব
+                const sehriTimeStr = timings.Fajr; // "04:30"
+                const iftarTimeStr = timings.Maghrib;
+
+                // আজকের সেহরি টাইম (ফজর)
+                let sehriDate = new Date();
+                sehriDate.setHours(parseInt(sehriTimeStr.split(':')[0]), parseInt(sehriTimeStr.split(':')[1]), 0);
+
+                // ইফতার টাইম
+                let iftarDate = new Date();
+                iftarDate.setHours(parseInt(iftarTimeStr.split(':')[0]), parseInt(iftarTimeStr.split(':')[1]), 0);
+
+                // যদি বর্তমান সময় ইফতারের পর হয় তাহলে পরের দিন সেহরি হিসাব করি
+                if (now > iftarDate) {
+                    // আগামীকাল ফজর (সেহরি) হবে
+                    let tomorrow = new Date(now);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    let tomorrowSehri = new Date(tomorrow);
+                    tomorrowSehri.setHours(parseInt(sehriTimeStr.split(':')[0]), parseInt(sehriTimeStr.split(':')[1]), 0);
+                    sehriDate = tomorrowSehri;
+
+                    // ইফতার আপডেট (আগামীকাল মাগরিব)
+                    let tomorrowIftar = new Date(tomorrow);
+                    tomorrowIftar.setHours(parseInt(iftarTimeStr.split(':')[0]), parseInt(iftarTimeStr.split(':')[1]), 0);
+                    iftarDate = tomorrowIftar;
+                } else if (now > sehriDate) {
+                    // সকালে ফজর পেরিয়ে গেলে, পরের দিনের সেহরি দরকার নেই, কিন্তু ইফতার হবে আজকের
+                    // যদি ইফতার এখনো না হয়ে থাকে, ঠিক আছে। কিন্তু যদি সেহরি পেরিয়ে যায় আর ইফতার বাকি?
+                    // কোন অ্যাকশন
+                }
+
+                // ডিফারেন্স (মিলিসেকেন্ড)
+                const diffSehri = sehriDate - now;
+                const diffIftar = iftarDate - now;
+
+                function formatCountdown(ms) {
+                    if (ms <= 0) return '০০:০০:০০';
+                    const totalSec = Math.floor(ms / 1000);
+                    const hours = Math.floor(totalSec / 3600);
+                    const minutes = Math.floor((totalSec % 3600) / 60);
+                    const seconds = totalSec % 60;
+                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+
+                sehriCountEl.innerText = formatCountdown(diffSehri);
+                iftarCountEl.innerText = formatCountdown(diffIftar);
+            }
+
+            // নামাজের গ্রিড আপডেট + সেহরি/ইফতার টেক্সট
+            function updateAllTimes() {
+                if (!prayerDataCache) return;
+
+                const t = prayerDataCache.timings;
+                const hijri = prayerDataCache.date.hijri;
+
+                // বাংলা তারিখ (হিজরি)
+                currentDateBn.innerText = `${hijri.day} ${hijri.month.ar} ${hijri.year}`;
+
+                // সেহরি = ফজর, ইফতার = মাগরিব
+                sehriTimeEl.innerText = format12Hour(t.Fajr);
+                iftarTimeEl.innerText = format12Hour(t.Maghrib);
+
+                // নামাজের তালিকা HTML
+                const prayers = [
+                    { name: 'fajr', label: 'ফজর', time: t.Fajr },
+                    { name: 'sunrise', label: 'সূর্যোদয়', time: t.Sunrise },
+                    { name: 'dhuhr', label: 'যোহর', time: t.Dhuhr },
+                    { name: 'asr', label: 'আছর', time: t.Asr },
+                    { name: 'maghrib', label: 'মাগরিব', time: t.Maghrib },
+                    { name: 'isha', label: 'ইশা', time: t.Isha }
+                ];
+
+                let htmlStr = '';
+                prayers.forEach(p => {
+                    htmlStr += `<div class="prayer-item">
+                        <div class="prayer-name" data-i18n="${p.name}">${p.label}</div>
+                        <div class="prayer-time-value">${format12Hour(p.time)}</div>
+                    </div>`;
+                });
+                prayerContainer.innerHTML = htmlStr;
+
+                applyLanguage(currentLang); // ভাষা পুনরায় প্রয়োগ করি
+                updateCountdowns();
+            }
+
+            // ---------- লাইভ ক্লক (১২ ঘণ্টা) ----------
+            function updateLiveClock() {
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const period = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours === 0 ? 12 : hours;
+                liveClockEl.innerHTML = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} <small>${period}</small>`;
+            }
+
+            // ---------- ভাষা পরিবর্তন ----------
+            function applyLanguage(lang) {
+                currentLang = lang;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (i18n[lang] && i18n[lang][key]) {
+                        if (el.classList.contains('dua-meaning')) {
+                            if (lang === 'ar') el.innerText = ''; // আরবিতে অর্থ না দেখানো ভালো
+                            else el.innerText = i18n[lang][key];
+                        } else {
+                            el.innerText = i18n[lang][key];
+                        }
+                    }
+                });
+
+                // আরবি দুআ অপরিবর্তিত রাখি, কিন্তু অর্থ আপডেট
+                if (lang === 'ar') {
+                    sehriDuaAr.style.display = 'block';
+                    iftarDuaAr.style.display = 'block';
+                } else {
+                    sehriDuaAr.style.display = 'block'; // দুআ আরবি দেখাবেই
+                    iftarDuaAr.style.display = 'block';
+                }
+
+                // ফুটার টেক্সট আপডেট
+                document.getElementById('footerDynamicText').innerText = i18n[lang].footerText;
+
+                // active ভাষা বাটন
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+            }
+
+            // লোকেশন পরিবর্তন
+            function changeDivision(city) {
+                currentDivision = city;
+                document.querySelectorAll('.division-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.city === city);
+                });
+                fetchTimings(city);
+            }
+
+            // বছর ডায়নামিক
+            function updateFooterYear() {
+                footerYear.innerText = new Date().getFullYear();
+            }
+
+            // ---------- ইনিশিয়ালাইজ ও ইভেন্ট লিসেনার ----------
+            document.addEventListener('DOMContentLoaded', function() {
+                updateLiveClock();
+                clockInterval = setInterval(updateLiveClock, 1000);
+                updateFooterYear();
+
+                // ভাষা বাটন
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const lang = e.target.dataset.lang;
+                        applyLanguage(lang);
+                    });
+                });
+
+                // বিভাগ বাটন
+                document.querySelectorAll('.division-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const city = e.target.dataset.city;
+                        changeDivision(city);
+                    });
+                });
+
+                // শুরুতে ঢাকার জন্য ডাটা লোড
+                fetchTimings('Dhaka');
+
+                // কাউন্টডাউন প্রতি সেকেন্ডে
+                countdownInterval = setInterval(() => {
+                    if (prayerDataCache) updateCountdowns();
+                }, 1000);
+            });
+
+            // ক্লিনআপ (থিওরিটিক্যাল)
+            window.addEventListener('beforeunload', function() {
+                if (clockInterval) clearInterval(clockInterval);
+                if (countdownInterval) clearInterval(countdownInterval);
+            });
+
+        })();
+    </script>
+</body>
+</html>
